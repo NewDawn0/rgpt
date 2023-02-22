@@ -1,3 +1,15 @@
+/*                  _
+ *  _ __ __ _ _ __ | |_  A cli chat gpt client 
+ * | '__/ _` | '_ \| __| Author: NewDawn0
+ * | | | (_| | |_) | |_  License: MIT
+ * |_|  \__, | .__/ \__| Copyright: ©NewDawn0 2023
+ *      |___/|_| https://github.com/NewDawn0/rgpt
+ *
+ *  file: util.rs
+ *  date: 22.02.2023
+ *  lang: rust
+*/
+
 /* Imports & modules*/
 use crate::common::*;
 use std::io::{stdout, Write};

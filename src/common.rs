@@ -6,6 +6,7 @@
  *      |___/|_| https://github.com/NewDawn0/rgpt
  *
  *  file: common.rs
+ *  date: 22.02.2023
  *  lang: rust
 */
 

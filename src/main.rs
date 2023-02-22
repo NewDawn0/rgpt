@@ -5,6 +5,11 @@
  * |_|  \__, | .__/ \__| Copyright: ©NewDawn0 2023
  *      |___/|_| https://github.com/NewDawn0/rgpt
  *
+ *  file: main.rs
+ *  date: 22.02.2023
+ *  lang: rust
+ *
+ *
  * MIT License
  *
  * Copyright (c) 2023 NewDawn0
