@@ -28,9 +28,9 @@
  * SOFTWARE.
 */
 
-// Modules
+/* Modules */
 mod util;
-
+mod common;
 
 fn main() {
     println!("Hello, world!");
