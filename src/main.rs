@@ -70,7 +70,7 @@ fn main() {
             }
         }
         Err(e) => {
-            sp.stop_with_message(format!("{}{}", COLOURS.reset, e));
+            sp.stop_with_message(format!("{}{}Error{} :: {}", COLOURS.reset, COLOURS.red, COLOURS.reset, e));
             exit(1)
         }
     }
