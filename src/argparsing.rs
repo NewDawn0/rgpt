@@ -13,6 +13,8 @@
 
 /* Imports */
 use std::{env, process::exit};
+use const_format::formatcp;
+
 use crate::error_exit;
 use crate::common::{COLOURS, ParseFloatType};
 use crate::util::parse_float;
@@ -35,7 +37,7 @@ pub fn parse_args() -> (String, Params, Settings) {
     while index < args.len() {
         let arg = &args[index];
         match arg.as_str() {
-            "-h" | "--help" => help(),
+            "-h" | "--help" => {help(); exit(0)},
             "-e" | "--execute" => params.execute = true,
             "-i" | "--interactive" => params.interactive = true,
             "-c" | "--code" => {
@@ -117,5 +119,74 @@ pub fn parse_args() -> (String, Params, Settings) {
 }
 
 fn help() {
-    print!("// TODO: Impl help()");
+    /* Arguemtn lines speretaed like the printed lines */
+    println!("{}                 _
+ _ __ __ _ _ __ | |_   An insane cli ChatGPT client
+| '__/ _` | '_ \\| __|  {}{}Author: NewDawn0
+{}| | | (_| | |_) | |_   {}{}License: MIT
+{}|_|  \\__, | .__/ \\__|  {}{}Copyright: ©NewDawn0 2023
+{}     |___/|_|  {}{}https://github.com/NewDawn0/rgpt
+
+{}OPTIONS
+    {}{}-h                          {}Print this help menu
+    {}{}--help                      {}Print this help menu
+
+    {}{}-c                          {}Return code as answer only
+    {}{}--code                      {}Return code as answer only
+
+    {}{}-s                          {}Returns a shell command
+    {}{}--shell                     {}Returns a shell command
+    {}{}-e                          {}Executes the shell command         {}Depends on: {}--shell
+    {}{}--execute                   {}Executes the shell command         {}Depends on: {}--shell
+
+    {}{}-i                          {}Starts interactive mode
+    {}{}--interactive               {}Starts interactive mode
+
+    {}{}--config   {}<{}key{}={}value{}>      Configures gpt itself
+               {}model{}=<{}String{}>       {}davinci{}|{}ada{}|{}curie{}|{}babbage       {}Defalt:{} davinci
+               {}maxTokens{}=<{}int{}>      ada|curie|babbage: {}5{} - {}2048     {}Defalt:{} 1024
+                                    davinci: {}4000
+               {}temperature{}=<{}float{}>  {}0{} - {}2                           {}Defalt:{} 0.2
+               {}accuracy{}=<{}float{}>     {}0{} - {}1                           {}Defalt:{} 0.9
+
+{}DESCRIPTION
+    {}{}Placeholder
+    For more info about the tool or its options visit the repo ttps://github.com/NewDawn0/rgpt
+
+{}Imprtant notes
+    {}{}- Placeholder
+
+{}EXAMPLE
+    {}{}Placeholder
+
+",
+COLOURS.bold_purple,
+COLOURS.reset, COLOURS.purple,
+COLOURS.bold_purple, COLOURS.reset, COLOURS.purple,
+COLOURS.bold_purple, COLOURS.reset, COLOURS.purple,
+COLOURS.bold_purple, COLOURS.reset, COLOURS.purple,
+COLOURS.bold_purple,
+COLOURS.reset, COLOURS.cyan, COLOURS.reset,
+COLOURS.reset, COLOURS.cyan, COLOURS.reset,
+COLOURS.reset, COLOURS.cyan, COLOURS.reset,
+COLOURS.reset, COLOURS.cyan, COLOURS.reset,
+COLOURS.reset, COLOURS.cyan, COLOURS.reset,
+COLOURS.reset, COLOURS.cyan, COLOURS.reset,
+COLOURS.reset, COLOURS.cyan, COLOURS.reset, COLOURS.blue, COLOURS.cyan,
+COLOURS.reset, COLOURS.cyan, COLOURS.reset, COLOURS.blue, COLOURS.cyan,
+COLOURS.reset, COLOURS.cyan, COLOURS.reset,
+COLOURS.reset, COLOURS.cyan, COLOURS.reset,
+COLOURS.reset, COLOURS.cyan, COLOURS.reset, COLOURS.red, COLOURS.reset, COLOURS.bold_purple, COLOURS.reset,
+COLOURS.red, COLOURS.reset, COLOURS.bold_yellow, COLOURS.reset, COLOURS.purple, COLOURS.reset,COLOURS.purple, COLOURS.reset,COLOURS.purple, COLOURS.reset, COLOURS.purple, COLOURS.blue, COLOURS.reset,
+COLOURS.red, COLOURS.reset, COLOURS.bold_yellow, COLOURS.reset, COLOURS.purple, COLOURS.reset, COLOURS.purple, COLOURS.blue, COLOURS.reset,
+COLOURS.purple,
+COLOURS.red, COLOURS.reset, COLOURS.bold_yellow, COLOURS.reset, COLOURS.purple, COLOURS.reset, COLOURS.purple, COLOURS.blue, COLOURS.reset,
+COLOURS.red, COLOURS.reset, COLOURS.bold_yellow, COLOURS.reset, COLOURS.purple, COLOURS.reset, COLOURS.purple, COLOURS.blue, COLOURS.reset,
+COLOURS.bold_purple,
+COLOURS.reset, COLOURS.purple,
+COLOURS.bold_purple,
+COLOURS.reset, COLOURS.purple,
+COLOURS.bold_purple,
+COLOURS.reset, COLOURS.purple,
+);
 }
