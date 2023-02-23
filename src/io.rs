@@ -21,6 +21,7 @@ use crossterm::{event, terminal};
 pub fn read_stdin() -> String {
     let mut input = String::new();
     let mut stdout = stdout();
+    let mut del_size: usize = 0;
 
     // Enable raw mode to capture special keys like arrow keys
     terminal::enable_raw_mode().expect("Could not enable raw mode");
@@ -31,9 +32,12 @@ pub fn read_stdin() -> String {
             event::Event::Key(event) => {
                 match event.code {
                     event::KeyCode::Backspace => {
-                        input.pop();
-                        print!("\x08 \x08");
-                        stdout.flush().expect("Could not flush stdout");
+                        if del_size > 0 {
+                            input.pop();
+                            print!("\x08 \x08");
+                            stdout.flush().expect("Could not flush stdout");
+                            del_size -= 1;
+                        }
                     },
                     event::KeyCode::Enter => {
                         print!("\r\n");
@@ -44,6 +48,7 @@ pub fn read_stdin() -> String {
                         input.push(c);
                         print!("{}", c);
                         stdout.flush().expect("Could not flush stdout");
+                        del_size += 1;
                     },
                     _ => ()
                 }
@@ -61,12 +66,12 @@ pub fn read_stdin() -> String {
 pub fn confirm() -> bool {
     loop {
         print!("{}>{} Confirm run: [y/N]: ", COLOURS.red, COLOURS.reset);
+        std::io::stdout().flush().expect("Could not flush stdout"); // flush
         match read_stdin().to_lowercase().as_str() {
             "y" | "yes" => return true,
             "n" | "no" => return false,
             _ => {
-                println!("Invalid option => aborting");
-                return false 
+                println!("Invalid option:");
             }
         }
     }
