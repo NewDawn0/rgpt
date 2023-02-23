@@ -6,6 +6,7 @@
  *      |___/|_| https://github.com/NewDawn0/rgpt
  *
  *  file: main.rs
+ *  desc: Main file
  *  date: 22.02.2023
  *  lang: rust
  *
@@ -33,10 +34,44 @@
  * SOFTWARE.
 */
 
-/* Modules */
+/* Modules & Imports */
+mod io;
 mod util;
 mod common;
+mod net;
+mod argparsing;
+mod highlight;
+use crate::common::COLOURS;
+use std::process::exit;
+use spinners::{Spinner, Spinners::Dots};
 
+/* TODO: add interactive mode
+ * TODO: add Help menu
+ * TODO: add dynamic language detection */
+
+/* fn main */
 fn main() {
-    println!("Hello, world!");
+    let ret = argparsing::parse_args();
+    let (prompt, params, settings)  =  (ret.0, ret.1, ret.2);
+    let mut sp = Spinner::new(Dots, format!("{}Waiting for response...", COLOURS.purple));
+    match net::handle(prompt.as_str(), params, settings) {
+        Ok(response) => {
+            if params.shell {
+                sp.stop_with_message(format!("{}{}", COLOURS.reset, highlight::highlight(&response, "sh")));
+                if params.execute {
+                    if io::confirm() {
+                        util::run_command(&response)
+                    }
+                }
+            } else if params.code {
+                sp.stop_with_message(format!("{}{}", COLOURS.reset, highlight::highlight(&response, "rs")))
+            } else {
+                sp.stop_with_message(format!("{}{}", COLOURS.reset, response))
+            }
+        }
+        Err(e) => {
+            sp.stop_with_message(format!("{}{}", COLOURS.reset, e));
+            exit(1)
+        }
+    }
 }
