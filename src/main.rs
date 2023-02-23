@@ -57,7 +57,7 @@ fn main() {
     match net::handle(prompt.as_str(), params, settings) {
         Ok(response) => {
             if params.shell {
-                sp.stop_with_message(format!("{}{}", COLOURS.reset, highlight::highlight(&response, "sh")));
+                sp.stop_with_message(format!("{}{}", COLOURS.reset, highlight::highlight(&response, "bash")));
                 if params.execute {
                     if io::confirm() {
                         util::run_command(&response)

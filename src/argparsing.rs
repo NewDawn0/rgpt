@@ -13,8 +13,6 @@
 
 /* Imports */
 use std::{env, process::exit};
-use const_format::formatcp;
-
 use crate::error_exit;
 use crate::common::{COLOURS, ParseFloatType};
 use crate::util::parse_float;
@@ -43,7 +41,17 @@ pub fn parse_args() -> (String, Params, Settings) {
             "-c" | "--code" => {
                 params.code = true;
                 settings.temperature = 0.8;
-                settings.top_p = 0.;
+                settings.top_p = 0.2;
+            },
+            "-r" | "--roast" => {
+                params.roast = true;
+                settings.temperature = 0.8;
+                settings.top_p = 0.2;
+            },
+            "-s" | "--shell" => {
+                params.shell = true;
+                settings.temperature = 0.2;
+                settings.top_p = 0.9;
             },
             "--config" => {
                 if index+1 < args.len() {
@@ -153,12 +161,9 @@ fn help() {
     {}{}Placeholder
     For more info about the tool or its options visit the repo ttps://github.com/NewDawn0/rgpt
 
-{}Imprtant notes
-    {}{}- Placeholder
-
 {}EXAMPLE
-    {}{}Placeholder
-
+    {}{}$ {}rgpt {}{}--shell {}Remove files containing tmp in filename
+    {}rm *tmp*
 ",
 COLOURS.bold_purple,
 COLOURS.reset, COLOURS.purple,
@@ -185,8 +190,6 @@ COLOURS.red, COLOURS.reset, COLOURS.bold_yellow, COLOURS.reset, COLOURS.purple, 
 COLOURS.bold_purple,
 COLOURS.reset, COLOURS.purple,
 COLOURS.bold_purple,
-COLOURS.reset, COLOURS.purple,
-COLOURS.bold_purple,
-COLOURS.reset, COLOURS.purple,
-);
+COLOURS.reset, COLOURS.red, COLOURS.bold_purple, COLOURS.reset, COLOURS.cyan, COLOURS.reset,
+COLOURS.reset);
 }
