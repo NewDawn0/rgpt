@@ -26,7 +26,7 @@ pub fn parse_args() -> (String, Params, Settings) {
     /* vars */
     let args: Vec<String> = env::args().skip(1).collect();
     let mut settings = Settings::new(); // store the setings
-    let mut temp_tokens = 2048; // storing the max tokens until the model is set
+    let mut temp_tokens = settings.max_tokens; // storing the max tokens until the model is set
     let mut prompt = String::new(); // prompt variable
     let mut params = Params::new(); // param variable
     let mut index: usize = 0; // index for looping over the args
