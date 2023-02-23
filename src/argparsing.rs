@@ -22,7 +22,7 @@ use crate::common::{Params, Settings};
  * @RVAL prmpt: String
  * @RVAL params: crate::common::Params
  * @RVAL settigns: crate::common::Settings */
-fn parse_args() -> (String, Params, Settings) {
+pub fn parse_args() -> (String, Params, Settings) {
     /* vars */
     let args: Vec<String> = env::args().skip(1).collect();
     let mut settings = Settings::new(); // store the setings
