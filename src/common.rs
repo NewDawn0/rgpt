@@ -67,9 +67,12 @@ pub const HELP: &'static str = formatcp!("Try '$ {}{}rgpt {}--help{}'", COLOURS.
 
 /* Colours to be used */
 pub const COLOURS: Colours = Colours {
+    bold_purple: "\x1b[35;1m",
+    bold_yellow: "\x1b[33;1m",
     purple: "\x1b[35m",
     bold: "\x1b[1m",
     blue: "\x1b[34m",
+    cyan: "\x1b[36m",
     reset: "\x1b[0m",
     red: "\x1b[31;1m"
 };
@@ -77,10 +80,13 @@ pub const COLOURS: Colours = Colours {
 /* Helper Structs & Enums
  * Struct storing the colours */
 pub struct Colours {
+    pub bold_purple: &'static str,
+    pub bold_yellow: &'static str,
     pub purple: &'static str,
     pub bold: &'static str,
     pub reset: &'static str,
     pub blue: &'static str,
+    pub cyan: &'static str,
     pub red: &'static str
 }
 
