@@ -6,67 +6,74 @@
  *      |___/|_| https://github.com/NewDawn0/rgpt
  *
  *  file: util.rs
+ *  desc: Random useful functions
  *  date: 22.02.2023
  *  lang: rust
 */
 
-/* Imports & modules*/
+/* Imports */
+use std::{
+    env,
+    process::{exit, Command},
+};
 use crate::common::*;
-use std::io::{stdout, Write};
-use crossterm::{event, terminal};
 
-/* fn read_stdin: reads a line from stdin
- * @RVAL: String */
-pub fn read_stdin() -> String {
-    let mut input = String::new();
-    let mut stdout = stdout();
-
-    // Enable raw mode to capture special keys like arrow keys
-    terminal::enable_raw_mode().expect("Could not enable raw mode");
-    loop {
-        // Read next event from user input
-        let event = event::read().expect("Could not read event");
-        match event {
-            event::Event::Key(event) => {
-                match event.code {
-                    event::KeyCode::Backspace => {
-                        input.pop();
-                        print!("\x08 \x08");
-                        stdout.flush().expect("Could not flush stdout");
-                    },
-                    event::KeyCode::Enter => {
-                        print!("\r\n");
-                        stdout.flush().expect("Could not flush stdout");
-                        break;
-                    },
-                    event::KeyCode::Char(c) => {
-                        input.push(c);
-                        print!("{}", c);
-                        stdout.flush().expect("Could not flush stdout");
-                    },
-                    _ => ()
-                }
-            },
-            _ => ()
-        }
-    }
-    // Disable raw mode before returning the input
-    terminal::disable_raw_mode().expect("Could not disable raw mode");
-    input
+#[macro_export]
+macro_rules! error_exit {
+    ($($arg:tt)*) => ({
+        eprintln!("{}Error{} :: {}", COLOURS.red, COLOURS.reset, format!($($arg)*));
+        println!("{}", crate::common::HELP);
+        exit(1);
+    })
 }
 
-/* fn confirm: get confirmation from user
- * @RVAL: bool*/
-pub fn confirm() -> bool {
-    loop {
-        print!("{}>{} Confirm run: [y/N]: ", COLOURS.red, COLOURS.reset);
-        match read_stdin().to_lowercase().as_str() {
-            "y" | "yes" => return true,
-            "n" | "no" => return false,
-            _ => {
-                println!("Invalid option => aborting");
-                return false 
+/* fn get_env: Gets an environment variable
+ * @PARAM env_var: String
+ * @RVAL: String */
+pub fn get_env(env_var: &str) -> Result<String, RgptError>{
+    match env::var(env_var) {
+        Ok(var) => Ok(var),
+        Err(_) => Err(RgptError::new(ErrorType::GetEnvErr(env_var.to_string())))
+    }
+}
+
+
+/* fn run_command: runs a shell command and prints the output
+ * @Param cmd: &str */
+pub fn run_command(cmd: &str) {
+    let command = if cmd.starts_with("$ ") {
+        cmd[2..].to_string()
+    } else {
+        cmd.to_string()
+    };
+    let output = Command::new("sh")
+        .arg("-c")
+        .arg(command)
+        .output()
+        .expect("failed to execute process");
+    if let Ok(e) = String::from_utf8(output.stderr) {
+        eprintln!("{}",e)
+    }
+    match String::from_utf8(output.stdout) {
+        Ok(out) => println!("{}", out),
+        Err(e) => println!("{}Error{} :: {}", COLOURS.red, COLOURS.reset, e)
+    }
+}
+
+/* fn parse_float: parse strs for floats and set return a single digit precision f32
+ * @PARAM float_string: &str
+ * @RVAL: f32 */
+pub fn parse_float(float_string: &str, max: f32, typef: ParseFloatType) -> Option<f32> {
+    match float_string.parse::<f32>() {
+        Ok(float) => {
+            if float >= 0.0 && float <= max {
+                Some((float * 10.0).round() / 10.0)
+            } else {
+                error_exit!("{} not in range of 0.0 and {}", typef, max);
             }
+        },
+        Err(e) => {
+            error_exit!("{}", e);
         }
     }
 }
