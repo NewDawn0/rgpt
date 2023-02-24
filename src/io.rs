@@ -13,8 +13,11 @@
 
 /* Imports & modules*/
 use crate::common::*;
+use ::crossterm::{
+    event::{read, Event, KeyCode, KeyModifiers, KeyEvent, KeyEventKind, KeyEventState},
+    terminal
+};
 use std::io::{stdout, Write};
-use crossterm::{event, terminal};
 
 /* fn read_stdin: reads a line from stdin
  * @RVAL: String */
@@ -27,33 +30,76 @@ pub fn read_stdin() -> String {
     terminal::enable_raw_mode().expect("Could not enable raw mode");
     loop {
         // Read next event from user input
-        let event = event::read().expect("Could not read event");
+        let event = read().expect("Could not read event");
         match event {
-            event::Event::Key(event) => {
-                match event.code {
-                    event::KeyCode::Backspace => {
-                        if del_size > 0 {
-                            input.pop();
-                            print!("\x08 \x08");
-                            stdout.flush().expect("Could not flush stdout");
-                            del_size -= 1;
-                        }
-                    },
-                    event::KeyCode::Enter => {
-                        print!("\r\n");
-                        stdout.flush().expect("Could not flush stdout");
-                        break;
-                    },
-                    event::KeyCode::Char(c) => {
-                        input.push(c);
-                        print!("{}", c);
-                        stdout.flush().expect("Could not flush stdout");
-                        del_size += 1;
-                    },
-                    _ => ()
+            /* Exit using Ctrl-c or Ctrl-q
+             * ctrl-c */
+            Event::Key(KeyEvent {
+                code: KeyCode::Char('c'),
+                modifiers: KeyModifiers::CONTROL,
+                kind: KeyEventKind::Press,
+                state: KeyEventState::NONE
+            // Ctrl - q
+            }) | Event::Key(KeyEvent {
+                code: KeyCode::Char('q'),
+                modifiers: KeyModifiers::CONTROL,
+                kind: KeyEventKind::Press,
+                state: KeyEventState::NONE
+            }) => {
+                input.clear();
+                print!("\r");
+                stdout.flush().expect("Could not flush stdout");
+                break;
+            },
+            /* Delete using Backspace */
+            Event::Key(KeyEvent {
+                code: KeyCode::Backspace,
+                modifiers: KeyModifiers::NONE,
+                kind: KeyEventKind::Press,
+                state: KeyEventState::NONE
+            }) => {
+                if del_size > 0 {
+                    input.pop();
+                    print!("\x08 \x08");
+                    stdout.flush().expect("Could not flush stdout");
+                    del_size -= 1;
                 }
             },
-            _ => ()
+            /* Submit using Enter*/
+            Event::Key(KeyEvent {
+                code: KeyCode::Enter,
+                modifiers: KeyModifiers::NONE,
+                kind: KeyEventKind::Press,
+                state: KeyEventState::NONE
+            }) => {
+                print!("\r\n");
+                stdout.flush().expect("Could not flush stdout");
+                break;
+            },
+            /* Weite using any other key*/
+            Event::Key(KeyEvent {
+                code: KeyCode::Char(c),
+                modifiers: KeyModifiers::NONE,
+                kind: KeyEventKind::Press,
+                state: KeyEventState::NONE
+            }) => {
+                input.push(c);
+                print!("{}", c);
+                stdout.flush().expect("Could not flush stdout");
+                del_size += 1;
+            },
+            Event::Key(KeyEvent {
+                code: KeyCode::Char(c),
+                modifiers: KeyModifiers::SHIFT,
+                kind: KeyEventKind::Press,
+                state: KeyEventState::NONE
+            }) => {
+                input.push(c);
+                print!("{}", c);
+                stdout.flush().expect("Could not flush stdout");
+                del_size += 1;
+            },
+            _ => {}
         }
     }
     // Disable raw mode before returning the input
