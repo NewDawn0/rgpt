@@ -41,18 +41,40 @@ mod common;
 mod net;
 mod argparsing;
 mod highlight;
-use crate::common::COLOURS;
-use std::process::exit;
+use crate::common::*;
+use std::{process::exit, io::Write};
 use spinners::{Spinner, Spinners::Dots};
 
-/* TODO: add interactive mode
- * TODO: add Help menu
+/* TODO: add Help menu
  * TODO: add dynamic language detection */
 
 /* fn main */
 fn main() {
     let ret = argparsing::parse_args();
-    let (prompt, params, settings)  =  (ret.0, ret.1, ret.2);
+    let (mut prompt, params, settings)  =  (ret.0, ret.1, ret.2);
+    loop {
+        if prompt.is_empty() {
+            print!("{}>{} ", COLOURS.red, COLOURS.reset);
+            std::io::stdout().flush().expect("Could not flush stdout");
+            prompt = io::read_stdin();
+        }
+        query(prompt.clone(), params, settings.clone());
+        if !params.interactive {
+            break;
+        }
+        prompt.clear();
+    }
+}
+
+/* fn query: runs all the required functions to query chat gpt
+ * @PARAM prompt: String
+ * @PARAM params: crate::common::Params
+ * @PARAM settings: crate::common::Settings */
+fn query(prompt: String, params: Params, settings: Settings) {
+    // Ctrl-c or Ctrl-q recieved from interactive
+    if prompt.is_empty() {
+        exit(0);
+    }
     let mut sp = Spinner::new(Dots, format!("{}Waiting for response...", COLOURS.purple));
     match net::handle(prompt.as_str(), params, settings) {
         Ok(response) => {
@@ -61,7 +83,7 @@ fn main() {
                 if params.execute {
                     if io::confirm() {
                         util::run_command(&response)
-                    }
+                    } 
                 }
             } else if params.code {
                 sp.stop_with_message(format!("{}{}", COLOURS.reset, highlight::highlight(&response, "rs")))
@@ -71,7 +93,9 @@ fn main() {
         }
         Err(e) => {
             sp.stop_with_message(format!("{}{}Error{} :: {}", COLOURS.reset, COLOURS.red, COLOURS.reset, e));
-            exit(1)
+            if !params.interactive {
+                exit(1)
+            }
         }
-    }
+}
 }
