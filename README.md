@@ -15,6 +15,13 @@ cargo install --git https://github.com/NewDawn0/rgpt
 ```bash
 Coming soon
 ```
+**Build from source**
+```bash
+git clone https://github.com/NewDawn0/rgpt
+cd rgpt
+cargo build --release
+sudo mv target/release/rgpt /usr/local/bin/
+```
 
 ## Ussage
 Documentation coming soon
