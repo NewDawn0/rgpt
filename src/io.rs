@@ -13,11 +13,12 @@
 
 /* Imports & modules*/
 use crate::common::*;
+use crate::util::set_mode;
+use std::io::{stdout, Write};
 use ::crossterm::{
     event::{read, Event, KeyCode, KeyModifiers, KeyEvent, KeyEventKind, KeyEventState},
     terminal
 };
-use std::io::{stdout, Write};
 
 /* fn read_stdin: reads a line from stdin
  * @RVAL: String */
@@ -121,4 +122,23 @@ pub fn confirm() -> bool {
             }
         }
     }
+}
+
+/* fn parse_io: parses a string for arguments
+ * @PARAM params: crate::common::Params
+ * @PARAM settings: crate::common::Settings
+ * @RVAL: String */
+pub fn parse_io(params:&mut Params, settings: &mut Settings) -> String {
+    let mut word_vec = vec![];
+    let binding = read_stdin();
+    for token in binding.split_whitespace() {
+        match token {
+            "-c" | "--code" => set_mode(Modes::Code, params, settings),
+            "-r" | "--roast" => set_mode(Modes::Shell, params, settings),
+            "-s" | "--shell" => set_mode(Modes::Shell, params, settings),
+            "-e" | "--execute" => params.execute = true,
+            str => word_vec.push(str)
+        }
+    }
+    word_vec.join(" ")
 }

@@ -14,9 +14,8 @@
 /* Imports */
 use std::{env, process::exit};
 use crate::error_exit;
-use crate::common::{COLOURS, ParseFloatType};
-use crate::util::parse_float;
-use crate::common::{Params, Settings};
+use crate::common::*;
+use crate::util::{parse_float, set_mode};
 
 /* fn parse_args: Parsing command line args
  * @RVAL prmpt: String
@@ -38,21 +37,10 @@ pub fn parse_args() -> (String, Params, Settings) {
             "-h" | "--help" => {help(); exit(0)},
             "-e" | "--execute" => params.execute = true,
             "-i" | "--interactive" => params.interactive = true,
-            "-c" | "--code" => {
-                params.code = true;
-                settings.temperature = 0.8;
-                settings.top_p = 0.2;
-            },
-            "-r" | "--roast" => {
-                params.roast = true;
-                settings.temperature = 0.8;
-                settings.top_p = 0.2;
-            },
-            "-s" | "--shell" => {
-                params.shell = true;
-                settings.temperature = 0.2;
-                settings.top_p = 0.9;
-            },
+            "--no-parse" => params.no_parse = true,
+            "-c" | "--code" => set_mode(Modes::Code, &mut params, &mut settings),
+            "-r" | "--roast" => set_mode(Modes::Roast, &mut params, &mut settings),
+            "-s" | "--shell" => set_mode(Modes::Shell, &mut params, &mut settings),
             "--config" => {
                 if index+1 < args.len() {
                     let opts: Vec<&str> = args[index+1].split("=").collect();
@@ -100,7 +88,7 @@ pub fn parse_args() -> (String, Params, Settings) {
     }
     /* Cleanup prompt */
     prompt = prompt.trim().to_string();
-    if prompt.is_empty() {
+    if prompt.is_empty() && !params.interactive {
         error_exit!("Provide a prompt")
     } else {} // else statement to make the rust compiler happy
     
@@ -144,18 +132,22 @@ fn help() {
 
     {}{}-s                          {}Returns a shell command
     {}{}--shell                     {}Returns a shell command
-    {}{}-e                          {}Executes the shell command         {}Depends on: {}--shell
-    {}{}--execute                   {}Executes the shell command         {}Depends on: {}--shell
+    {}{}-e                          {}Executes the shell command           {}Depends on: {}--shell
+    {}{}--execute                   {}Executes the shell command           {}Depends on: {}--shell
 
     {}{}-i                          {}Starts interactive mode
     {}{}--interactive               {}Starts interactive mode
+    {}{}--no-parse                  {}Sets if arguments need to be parsed  {}Depends on: {}--interactive
 
-    {}{}--config   {}<{}key{}={}value{}>      Configures gpt itself
-               {}model{}=<{}String{}>       {}davinci{}|{}ada{}|{}curie{}|{}babbage       {}Defalt:{} davinci
-               {}maxTokens{}=<{}int{}>      ada|curie|babbage: {}5{} - {}2048     {}Defalt:{} 1024
+    {}{}-r                          {}Roasts person
+    {}{}--roast                     {}Roasts person
+
+    {}{}--config   {}<{}key{}={}value{}>      Configures gpt itself:
+               {}model{}=<{}String{}>       {}davinci{}|{}ada{}|{}curie{}|{}babbage        {}Defalt:{} davinci
+               {}maxTokens{}=<{}int{}>      ada|curie|babbage: {}5{} - {}2048      {}Defalt:{} 1024
                                     davinci: {}4000
-               {}temperature{}=<{}float{}>  {}0{} - {}2                           {}Defalt:{} 0.2
-               {}accuracy{}=<{}float{}>     {}0{} - {}1                           {}Defalt:{} 0.9
+               {}temperature{}=<{}float{}>  {}0{} - {}2                            {}Defalt:{} 0.2
+               {}accuracy{}=<{}float{}>     {}0{} - {}1                            {}Defalt:{} 0.9
 
 {}DESCRIPTION
     {}{}Placeholder
@@ -180,7 +172,10 @@ COLOURS.reset, COLOURS.cyan, COLOURS.reset,
 COLOURS.reset, COLOURS.cyan, COLOURS.reset, COLOURS.blue, COLOURS.cyan,
 COLOURS.reset, COLOURS.cyan, COLOURS.reset, COLOURS.blue, COLOURS.cyan,
 COLOURS.reset, COLOURS.cyan, COLOURS.reset,
+COLOURS.reset, COLOURS.cyan, COLOURS.reset,   
+COLOURS.reset, COLOURS.cyan, COLOURS.reset, COLOURS.blue, COLOURS.cyan,
 COLOURS.reset, COLOURS.cyan, COLOURS.reset,
+COLOURS.reset, COLOURS.cyan, COLOURS.reset,   
 COLOURS.reset, COLOURS.cyan, COLOURS.reset, COLOURS.red, COLOURS.reset, COLOURS.bold_purple, COLOURS.reset,
 COLOURS.red, COLOURS.reset, COLOURS.bold_yellow, COLOURS.reset, COLOURS.purple, COLOURS.reset,COLOURS.purple, COLOURS.reset,COLOURS.purple, COLOURS.reset, COLOURS.purple, COLOURS.blue, COLOURS.reset,
 COLOURS.red, COLOURS.reset, COLOURS.bold_yellow, COLOURS.reset, COLOURS.purple, COLOURS.reset, COLOURS.purple, COLOURS.blue, COLOURS.reset,

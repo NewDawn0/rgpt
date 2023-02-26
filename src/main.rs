@@ -42,26 +42,41 @@ mod net;
 mod argparsing;
 mod highlight;
 use crate::common::*;
-use std::{process::exit, io::Write};
 use spinners::{Spinner, Spinners::Dots};
+use std::{
+    process::exit,
+    io::{stdout, Write}
+};
 
 /* TODO: add Help menu
  * TODO: add dynamic language detection */
 
 /* fn main */
 fn main() {
+    let mut stdout = stdout();
     let ret = argparsing::parse_args();
-    let (mut prompt, params, settings)  =  (ret.0, ret.1, ret.2);
+    let (mut prompt, default_params, default_settings)  =  (ret.0, ret.1, ret.2);
+    let (mut params, mut settings) = (default_params, default_settings.clone());
     loop {
         if prompt.is_empty() {
             print!("{}>{} ", COLOURS.red, COLOURS.reset);
-            std::io::stdout().flush().expect("Could not flush stdout");
-            prompt = io::read_stdin();
+            stdout.flush().expect("Could not flush stdout");
+            // checks if argmuments need to be parsed when read from stdin
+            if params.no_parse {
+                prompt = io::read_stdin();
+            } else {
+                prompt = io::parse_io(&mut params, &mut settings);
+            }
         }
         query(prompt.clone(), params, settings.clone());
         if !params.interactive {
             break;
         }
+        // reset prompt args and settigns
+        params = default_params;
+        params.interactive = true;
+        settings = default_settings.clone();
+        // reset prmpt
         prompt.clear();
     }
 }
@@ -97,5 +112,5 @@ fn query(prompt: String, params: Params, settings: Settings) {
                 exit(1)
             }
         }
-}
+    }
 }
