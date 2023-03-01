@@ -11,11 +11,7 @@ RGPT is a powerful CLI chatbot client that combines the speed of the command lin
 ```bash
 cargo install --git https://github.com/NewDawn0/rgpt
 ```
-**Docker**
-```bash
-Coming soon
-```
-**Build from source**
+**Install from source**
 ```bash
 git clone https://github.com/NewDawn0/rgpt
 cd rgpt
