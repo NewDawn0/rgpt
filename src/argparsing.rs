@@ -41,6 +41,7 @@ pub fn parse_args() -> (String, Params, Settings) {
             "-c" | "--code" => set_mode(Modes::Code, &mut params, &mut settings),
             "-r" | "--roast" => set_mode(Modes::Roast, &mut params, &mut settings),
             "-s" | "--shell" => set_mode(Modes::Shell, &mut params, &mut settings),
+            "--history" => params.history = true,
             "--config" => {
                 if index+1 < args.len() {
                     let opts: Vec<&str> = args[index+1].split("=").collect();

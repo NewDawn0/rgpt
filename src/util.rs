@@ -12,12 +12,14 @@
 */
 
 /* Imports */
+use crate::common::*;
 use std::{
     env,
     process::{exit, Command},
 };
-use crate::common::*;
 
+/* macro error_exit: exits with a formatted error message and exit code 1 
+ * @PARAM: formatting */
 #[macro_export]
 macro_rules! error_exit {
     ($($arg:tt)*) => ({
@@ -74,6 +76,30 @@ pub fn parse_float(float_string: &str, max: f32, typef: ParseFloatType) -> Optio
         },
         Err(e) => {
             error_exit!("{}", e);
+        }
+    }
+}
+
+/* fn set_mode: sets settings and params for a given mode
+ * @PARAM mode: crate:common::Modes
+ * @PARAM params: crate::common::Params
+ * @PARAM settings: crate::common::Settings */
+pub fn set_mode(mode: Modes, params: &mut Params, settings: &mut Settings) {
+    match mode {
+        Modes::Shell => {
+            params.shell = true;
+            settings.temperature = 0.2;
+            settings.top_p = 0.9;
+        },
+        Modes::Code => {
+            params.code = true;
+            settings.temperature = 0.8;
+            settings.top_p = 0.2;
+        },
+        Modes::Roast => {
+            params.roast = true;
+            settings.temperature = 0.8;
+            settings.top_p = 0.2;
         }
     }
 }

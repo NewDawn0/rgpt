@@ -14,12 +14,12 @@
 /* Imports */
 use const_format::formatcp;
 use serde::{Serialize, Deserialize};
+use crate::net;
 use std::{
     error::Error,
     fmt::{self, Display, Formatter, Debug}
 };
 
-use crate::net;
 
 /* Errors */
 /* RgptError err type */
@@ -91,7 +91,7 @@ pub struct Colours {
 }
 
 /* Struct storing the model settings */
-#[derive(Deserialize, Serialize)]
+#[derive(Deserialize, Serialize, Clone)]
 pub struct Settings {
     pub model: String,
     pub max_tokens: i32,
@@ -116,6 +116,9 @@ pub struct Params {
     pub shell: bool,
     pub execute: bool,
     pub interactive: bool,
+    pub roast: bool,
+    pub no_parse: bool,
+    pub history: bool
 }
 impl Params {
     pub fn new() -> Params {
@@ -123,7 +126,10 @@ impl Params {
             code: false,
             shell: false,
             execute: false,
-            interactive: false
+            interactive: false,
+            roast: false,
+            no_parse: false,
+            history: false,
         }
     }
 }
@@ -142,3 +148,9 @@ impl Display for ParseFloatType {
     }
 }
 
+/* modes for the set_mode function */
+pub enum Modes {
+    Roast,
+    Shell,
+    Code
+}

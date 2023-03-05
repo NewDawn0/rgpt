@@ -15,14 +15,15 @@
 use crate::common::*;
 use crate::util::set_mode;
 use std::io::{stdout, Write};
-use ::crossterm::{
+use crossterm::{
     event::{read, Event, KeyCode, KeyModifiers, KeyEvent, KeyEventKind, KeyEventState},
     terminal
 };
 
 /* fn read_stdin: reads a line from stdin
  * @RVAL: String */
-pub fn read_stdin() -> String {
+pub fn read_stdin(hist: &mut Vec<String>) -> String {
+    let mut hist_index = hist.len();
     let mut input = String::new();
     let mut stdout = stdout();
     let mut del_size: usize = 0;
@@ -77,7 +78,8 @@ pub fn read_stdin() -> String {
                 stdout.flush().expect("Could not flush stdout");
                 break;
             },
-            /* Weite using any other key*/
+            /* Write using any other key
+             * Lowercase keys */
             Event::Key(KeyEvent {
                 code: KeyCode::Char(c),
                 modifiers: KeyModifiers::NONE,
@@ -89,6 +91,7 @@ pub fn read_stdin() -> String {
                 stdout.flush().expect("Could not flush stdout");
                 del_size += 1;
             },
+            /* Uppercase keys*/
             Event::Key(KeyEvent {
                 code: KeyCode::Char(c),
                 modifiers: KeyModifiers::SHIFT,
@@ -100,8 +103,45 @@ pub fn read_stdin() -> String {
                 stdout.flush().expect("Could not flush stdout");
                 del_size += 1;
             },
+            /* Get previous command history */
+            Event::Key(KeyEvent {
+                code: KeyCode::Up,
+                modifiers: KeyModifiers::NONE,
+                kind: KeyEventKind::Press,
+                state: KeyEventState::NONE
+            }) => {
+                if hist_index > 0 && hist_index <= hist.len() {
+                    hist_index -= 1;
+                    input = hist[hist_index].clone();
+                    del_size = hist[hist_index].len();
+                    print!("\r\x1b[2K{}>{} {}", COLOURS.red, COLOURS.reset, input);
+                    stdout.flush().expect("Could not flush stdout")
+                }
+            },
+            /* Forward command history */
+            Event::Key(KeyEvent {
+                code: KeyCode::Down,
+                modifiers: KeyModifiers::NONE,
+                kind: KeyEventKind::Press,
+                state: KeyEventState::NONE
+            }) => {
+                if hist_index < hist.len()-1 {
+                    input = hist[hist_index].clone();
+                    del_size = hist[hist_index].len();
+                    print!("\r\x1b[2K{}>{} {}", COLOURS.red, COLOURS.reset, input);
+                    stdout.flush().expect("Could not flush stdout");
+                    hist_index += 1
+                } else {
+                    input = String::new();
+                    del_size = 0;
+                    print!("\r\x1b[2K{}>{} {}", COLOURS.red, COLOURS.reset, input);
+                }
+            },
             _ => {}
         }
+    }
+    if !input.is_empty() {
+        hist.push(input.clone());
     }
     // Disable raw mode before returning the input
     terminal::disable_raw_mode().expect("Could not disable raw mode");
@@ -111,10 +151,12 @@ pub fn read_stdin() -> String {
 /* fn confirm: get confirmation from user
  * @RVAL: bool*/
 pub fn confirm() -> bool {
+    // create a temporary history
+    let mut tmp_hist = Vec::<String>::new();
     loop {
         print!("{}>{} Confirm run: [y/N]: ", COLOURS.red, COLOURS.reset);
         std::io::stdout().flush().expect("Could not flush stdout"); // flush
-        match read_stdin().to_lowercase().as_str() {
+        match read_stdin(&mut tmp_hist).to_lowercase().as_str() {
             "y" | "yes" => return true,
             "n" | "no" => return false,
             _ => {
@@ -128,9 +170,9 @@ pub fn confirm() -> bool {
  * @PARAM params: crate::common::Params
  * @PARAM settings: crate::common::Settings
  * @RVAL: String */
-pub fn parse_io(params:&mut Params, settings: &mut Settings) -> String {
+pub fn parse_io(params:&mut Params, settings: &mut Settings, hist: &mut Vec<String>) -> String {
     let mut word_vec = vec![];
-    let binding = read_stdin();
+    let binding = read_stdin(hist);
     for token in binding.split_whitespace() {
         match token {
             "-c" | "--code" => set_mode(Modes::Code, params, settings),

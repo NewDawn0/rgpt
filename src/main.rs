@@ -57,18 +57,24 @@ fn main() {
     let ret = argparsing::parse_args();
     let (mut prompt, default_params, default_settings)  =  (ret.0, ret.1, ret.2);
     let (mut params, mut settings) = (default_params, default_settings.clone());
+    let mut history = Vec::<String>::new();
     loop {
         if prompt.is_empty() {
             print!("{}>{} ", COLOURS.red, COLOURS.reset);
             stdout.flush().expect("Could not flush stdout");
             // checks if argmuments need to be parsed when read from stdin
             if params.no_parse {
-                prompt = io::read_stdin();
+                prompt = io::read_stdin(&mut history);
             } else {
-                prompt = io::parse_io(&mut params, &mut settings);
+                prompt = io::parse_io(&mut params, &mut settings, &mut history);
             }
         }
-        query(prompt.clone(), params, settings.clone());
+        // Ctrl-c or Ctrl-q recieved from interactive
+        if prompt.is_empty() {
+            println!("{:?}", history);
+            exit(0);
+        }
+        query(prompt.clone(), params, settings.clone(), history.clone());
         if !params.interactive {
             break;
         }
@@ -85,11 +91,7 @@ fn main() {
  * @PARAM prompt: String
  * @PARAM params: crate::common::Params
  * @PARAM settings: crate::common::Settings */
-fn query(prompt: String, params: Params, settings: Settings) {
-    // Ctrl-c or Ctrl-q recieved from interactive
-    if prompt.is_empty() {
-        exit(0);
-    }
+fn query(prompt: String, params: Params, settings: Settings, history: Vec<String>) {
     let mut sp = Spinner::new(Dots, format!("{}Waiting for response...", COLOURS.purple));
     match net::handle(prompt.as_str(), params, settings) {
         Ok(response) => {

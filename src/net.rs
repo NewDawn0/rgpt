@@ -27,13 +27,13 @@ use crate::util;
  * @PARAM params: struct Params
  * @RVAL: Result<String, String> */
 fn do_request(prompt: &str, params: common::Params, settings: common::Settings) -> Result<String, Box<dyn Error>> {
-    let mut sender_prompt = prompt.to_string();
+    let mut prompt = prompt.to_string();
     if params.code {
-        sender_prompt.push_str(". Provide only code as output.")
+        prompt.push_str(". Provide only code as output.")
     } else if params.shell {
-        sender_prompt.push_str(". Provide only a single line shell command as output.")
+        prompt.push_str(". Provide only a single line bash command as output.")
     } else if params.roast {
-        sender_prompt = format!("Formulate some roasts against {}", prompt);
+        prompt = format!("Formulate some roasts against {}", prompt);
     }
     let client = Client::new();
     let url = "https://api.openai.com/v1/completions";
@@ -44,7 +44,7 @@ fn do_request(prompt: &str, params: common::Params, settings: common::Settings) 
                 .header("Authorization", format!("Bearer {}", key))
                 .json(&json!({
                     "model": settings.model,
-                    "prompt": sender_prompt,
+                    "prompt": prompt,
                     "temperature": settings.temperature,
                     "max_tokens": settings.max_tokens,
                     "top_p": settings.top_p,
