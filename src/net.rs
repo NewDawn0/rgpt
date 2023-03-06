@@ -35,7 +35,10 @@ fn do_request(prompt: &str, params: common::Params, settings: common::Settings) 
     } else if params.roast {
         prompt = format!("Formulate some roasts against {}", prompt);
     }
-    let client = Client::new();
+    let client = match params.no_timout {
+        true => Client::builder().timeout(None).build()?,
+        false => Client::new()
+    };
     let url = "https://api.openai.com/v1/completions";
     match util::get_env("OPENAI_API_KEY"){
         Ok(key) => {

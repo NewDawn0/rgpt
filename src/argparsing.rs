@@ -38,6 +38,7 @@ pub fn parse_args() -> (String, Params, Settings) {
             "-e" | "--execute" => params.execute = true,
             "-i" | "--interactive" => params.interactive = true,
             "--no-parse" => params.no_parse = true,
+            "--no-timeout" => params.no_timout = true,
             "-c" | "--code" => set_mode(Modes::Code, &mut params, &mut settings),
             "-r" | "--roast" => set_mode(Modes::Roast, &mut params, &mut settings),
             "-s" | "--shell" => set_mode(Modes::Shell, &mut params, &mut settings),
@@ -143,6 +144,8 @@ fn help() {
     {}{}-r                          {}Roasts person
     {}{}--roast                     {}Roasts person
 
+    {}{}--no-timout                 {}Disables request timed out message
+
     {}{}--config   {}<{}key{}={}value{}>      Configures gpt itself:
                {}model{}=<{}String{}>       {}davinci{}|{}ada{}|{}curie{}|{}babbage        {}Defalt:{} davinci
                {}maxTokens{}=<{}int{}>      ada|curie|babbage: {}5{} - {}2048      {}Defalt:{} 1024
@@ -175,6 +178,7 @@ COLOURS.reset, COLOURS.cyan, COLOURS.reset, COLOURS.blue, COLOURS.cyan,
 COLOURS.reset, COLOURS.cyan, COLOURS.reset,
 COLOURS.reset, COLOURS.cyan, COLOURS.reset,   
 COLOURS.reset, COLOURS.cyan, COLOURS.reset, COLOURS.blue, COLOURS.cyan,
+COLOURS.reset, COLOURS.cyan, COLOURS.reset,
 COLOURS.reset, COLOURS.cyan, COLOURS.reset,
 COLOURS.reset, COLOURS.cyan, COLOURS.reset,   
 COLOURS.reset, COLOURS.cyan, COLOURS.reset, COLOURS.red, COLOURS.reset, COLOURS.bold_purple, COLOURS.reset,

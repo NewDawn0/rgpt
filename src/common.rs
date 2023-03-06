@@ -118,6 +118,7 @@ pub struct Params {
     pub interactive: bool,
     pub roast: bool,
     pub no_parse: bool,
+    pub no_timout: bool,
     pub history: bool
 }
 impl Params {
@@ -129,6 +130,7 @@ impl Params {
             interactive: false,
             roast: false,
             no_parse: false,
+            no_timout: false,
             history: false,
         }
     }
