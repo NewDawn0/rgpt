@@ -119,7 +119,8 @@ pub struct Params {
     pub roast: bool,
     pub no_parse: bool,
     pub no_timout: bool,
-    pub history: bool
+    pub history: bool,
+    pub spinner: bool
 }
 impl Params {
     pub fn new() -> Params {
@@ -132,6 +133,7 @@ impl Params {
             no_parse: false,
             no_timout: false,
             history: false,
+            spinner: true,
         }
     }
 }
