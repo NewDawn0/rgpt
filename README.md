@@ -20,5 +20,4 @@ sudo mv target/release/rgpt /usr/local/bin/
 ```
 
 ## Ussage
-Documentation coming soon
-
+Too lazy to write documentation right now; Just run `rgpt --help`
