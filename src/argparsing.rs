@@ -43,6 +43,13 @@ pub fn parse_args() -> (String, Params, Settings) {
             "-c" | "--code" => set_mode(Modes::Code, &mut params, &mut settings),
             "-r" | "--roast" => set_mode(Modes::Roast, &mut params, &mut settings),
             "-s" | "--shell" => set_mode(Modes::Shell, &mut params, &mut settings),
+            "-k" | "--key" => {
+                if index+1 < args.len() {
+                    params.key = Some(args[index+1].clone());
+                } else {
+                    error_exit!("Provide a key");
+                }
+            },
             "--history" => params.history = true,
             "--config" => {
                 if index+1 < args.len() {
@@ -146,7 +153,10 @@ fn help() {
     {}{}--roast                     {}Roasts person
 
     {}{}--no-timout                 {}Disables request timed out message
-    {}{}--no-spinner                {}Disables the waiting spinner 
+    {}{}--no-spinner                {}Disables the waiting spinner
+
+    {}{}-k                          {}By using this flag, you can specify an API key which will override the environment variable
+    {}{}--key                       {}By using this flag, you can specify an API key which will override the environment variable
 
     {}{}--config   {}<{}key{}={}value{}>      Configures gpt itself:
                {}model{}=<{}String{}>       {}davinci{}|{}ada{}|{}curie{}|{}babbage        {}Defalt:{} davinci
@@ -184,6 +194,8 @@ COLOURS.reset, COLOURS.cyan, COLOURS.reset,
 COLOURS.reset, COLOURS.cyan, COLOURS.reset,
 COLOURS.reset, COLOURS.cyan, COLOURS.reset,
 COLOURS.reset, COLOURS.cyan, COLOURS.reset,   
+COLOURS.reset, COLOURS.cyan, COLOURS.reset,
+COLOURS.reset, COLOURS.cyan, COLOURS.reset,
 COLOURS.reset, COLOURS.cyan, COLOURS.reset, COLOURS.red, COLOURS.reset, COLOURS.bold_purple, COLOURS.reset,
 COLOURS.red, COLOURS.reset, COLOURS.bold_yellow, COLOURS.reset, COLOURS.purple, COLOURS.reset,COLOURS.purple, COLOURS.reset,COLOURS.purple, COLOURS.reset, COLOURS.purple, COLOURS.blue, COLOURS.reset,
 COLOURS.red, COLOURS.reset, COLOURS.bold_yellow, COLOURS.reset, COLOURS.purple, COLOURS.reset, COLOURS.purple, COLOURS.blue, COLOURS.reset,

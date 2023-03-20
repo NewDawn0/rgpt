@@ -40,7 +40,7 @@ fn do_request(prompt: &str, params: common::Params, settings: common::Settings) 
         false => Client::new()
     };
     let url = "https://api.openai.com/v1/completions";
-    match util::get_env("OPENAI_API_KEY"){
+    match util::get_env("OPENAI_API_KEY", &params){
         Ok(key) => {
             let res = client.post(url)
                 .header("Content-Type", "application/json")

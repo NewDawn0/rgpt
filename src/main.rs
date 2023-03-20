@@ -56,7 +56,7 @@ fn main() {
     let mut stdout = stdout();
     let ret = argparsing::parse_args();
     let (mut prompt, default_params, default_settings)  =  (ret.0, ret.1, ret.2);
-    let (mut params, mut settings) = (default_params, default_settings.clone());
+    let (mut params, mut settings) = (default_params.clone(), default_settings.clone());
     let mut history = Vec::<String>::new();
     loop {
         if prompt.is_empty() {
@@ -74,12 +74,12 @@ fn main() {
             println!("{:?}", history);
             exit(0);
         }
-        query(prompt.clone(), params, settings.clone(), history.clone());
+        query(prompt.clone(), &params, settings.clone(), history.clone());
         if !params.interactive {
             break;
         }
         // reset prompt args and settigns
-        params = default_params;
+        params = default_params.clone();
         params.interactive = true;
         settings = default_settings.clone();
         // reset prmpt
@@ -91,12 +91,12 @@ fn main() {
  * @PARAM prompt: String
  * @PARAM params: crate::common::Params
  * @PARAM settings: crate::common::Settings */
-fn query(prompt: String, params: Params, settings: Settings, history: Vec<String>) {
+fn query(prompt: String, params: &Params, settings: Settings, history: Vec<String>) {
     let mut sp: Option<Spinner> = None;
     if params.spinner {
         sp = Some(Spinner::new(Dots, format!("{}Waiting for response...", COLOURS.purple)));
     }
-    match net::handle(prompt.as_str(), params, settings) {
+    match net::handle(prompt.as_str(), params.clone(), settings) {
         Ok(response) => {
             if params.shell {
                 match sp {

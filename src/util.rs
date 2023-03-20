@@ -31,11 +31,17 @@ macro_rules! error_exit {
 
 /* fn get_env: Gets an environment variable
  * @PARAM env_var: String
+ * @PARAM env_var: crate::common::Param
  * @RVAL: String */
-pub fn get_env(env_var: &str) -> Result<String, RgptError>{
-    match env::var(env_var) {
-        Ok(var) => Ok(var),
-        Err(_) => Err(RgptError::new(ErrorType::GetEnvErr(env_var.to_string())))
+pub fn get_env(env_var: &str, params: &Params) -> Result<String, RgptError>{
+    match &params.key {
+        Some(key) => Ok(key.to_string()),
+        None => {
+            match env::var(env_var) {
+                Ok(var) => Ok(var),
+                Err(_) => Err(RgptError::new(ErrorType::GetEnvErr(env_var.to_string())))
+            }
+        }
     }
 }
 
