@@ -74,7 +74,7 @@ fn main() {
             println!("{:?}", history);
             exit(0);
         }
-        query(prompt.clone(), &params, settings.clone(), history.clone());
+        query(prompt.clone(), &mut params, settings.clone(), history.clone());
         if !params.interactive {
             break;
         }
@@ -91,10 +91,14 @@ fn main() {
  * @PARAM prompt: String
  * @PARAM params: crate::common::Params
  * @PARAM settings: crate::common::Settings */
-fn query(prompt: String, params: &Params, settings: Settings, history: Vec<String>) {
+fn query(prompt: String, params: &mut Params, settings: Settings, history: Vec<String>) {
     let mut sp: Option<Spinner> = None;
     if params.spinner {
         sp = Some(Spinner::new(Dots, format!("{}Waiting for response...", COLOURS.purple)));
+        params.fmt = true;
+    }
+    if params.code || params.shell {
+        params.fmt = true
     }
     match net::handle(prompt.as_str(), params.clone(), settings) {
         Ok(response) => {
@@ -114,16 +118,26 @@ fn query(prompt: String, params: &Params, settings: Settings, history: Vec<Strin
                     None => println!("{}{}", COLOURS.reset, highlight::highlight(&response, "rs"))
                 }
             } else {
-                match sp {
-                    Some(mut sp) => sp.stop_with_message(format!("{}{}", COLOURS.reset, response)),
-                    None => println!("{}{}", COLOURS.reset, response)
+                match params.fmt {
+                    true => {
+                        match sp {
+                            Some(mut sp) => sp.stop_with_message(format!("{}{}", COLOURS.reset, response)),
+                            None => println!("{}{}", COLOURS.reset, response)
+                        }
+                    },
+                    false => println!("{}", response)
                 }
             }
         }
         Err(e) => {
-            match sp {
-                Some(mut sp) => sp.stop_with_message(format!("{}{}Error{} :: {}", COLOURS.reset, COLOURS.red, COLOURS.reset, e)),
-                None => eprintln!("{}{}Error{} :: {}", COLOURS.reset, COLOURS.red, COLOURS.reset, e)
+            match params.fmt {
+                true => {
+                    match sp {
+                        Some(mut sp) => sp.stop_with_message(format!("{}{}Error{} :: {}", COLOURS.reset, COLOURS.red, COLOURS.reset, e)),
+                        None => eprintln!("{}{}Error{} :: {}", COLOURS.reset, COLOURS.red, COLOURS.reset, e)
+                    }
+                },
+                false => eprintln!("Error :: {}", e)
             }
             if !params.interactive {
                 exit(1)

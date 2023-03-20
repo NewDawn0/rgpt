@@ -112,6 +112,7 @@ impl Settings {
 /* Flags which can be set */
 #[derive(Clone)]
 pub struct Params {
+    pub fmt: bool,
     pub key: Option<String>,
     pub code: bool,
     pub shell: bool,
@@ -126,6 +127,7 @@ pub struct Params {
 impl Params {
     pub fn new() -> Params {
         Params {
+            fmt: true,
             key: None,
             code: false,
             shell: false,

@@ -43,6 +43,7 @@ pub fn parse_args() -> (String, Params, Settings) {
             "-c" | "--code" => set_mode(Modes::Code, &mut params, &mut settings),
             "-r" | "--roast" => set_mode(Modes::Roast, &mut params, &mut settings),
             "-s" | "--shell" => set_mode(Modes::Shell, &mut params, &mut settings),
+            "--no-fmt" => params.fmt = false,
             "-k" | "--key" => {
                 if index+1 < args.len() {
                     params.key = Some(args[index+1].clone());
@@ -137,8 +138,8 @@ fn help() {
     {}{}-h                          {}Print this help menu
     {}{}--help                      {}Print this help menu
 
-    {}{}-c                          {}Return code as answer only
-    {}{}--code                      {}Return code as answer only
+    {}{}-c                          {}Return code as answer only           {}Incompatible with: {}--no-fmt
+    {}{}--code                      {}Return code as answer only           {}Incompatible with: {}--no-fmt
 
     {}{}-s                          {}Returns a shell command
     {}{}--shell                     {}Returns a shell command
@@ -154,6 +155,7 @@ fn help() {
 
     {}{}--no-timout                 {}Disables request timed out message
     {}{}--no-spinner                {}Disables the waiting spinner
+    {}{}--no-fmt                    {}Disables answer string formatting    {}Incompatible with: {}--code   {}Depends on: {}--no-spinner
 
     {}{}-k                          {}By using this flag, you can specify an API key which will override the environment variable
     {}{}--key                       {}By using this flag, you can specify an API key which will override the environment variable
@@ -181,8 +183,8 @@ COLOURS.bold_purple, COLOURS.reset, COLOURS.purple,
 COLOURS.bold_purple,
 COLOURS.reset, COLOURS.cyan, COLOURS.reset,
 COLOURS.reset, COLOURS.cyan, COLOURS.reset,
-COLOURS.reset, COLOURS.cyan, COLOURS.reset,
-COLOURS.reset, COLOURS.cyan, COLOURS.reset,
+COLOURS.reset, COLOURS.cyan, COLOURS.reset, COLOURS.blue, COLOURS.cyan,
+COLOURS.reset, COLOURS.cyan, COLOURS.reset, COLOURS.blue, COLOURS.cyan,
 COLOURS.reset, COLOURS.cyan, COLOURS.reset,
 COLOURS.reset, COLOURS.cyan, COLOURS.reset,
 COLOURS.reset, COLOURS.cyan, COLOURS.reset, COLOURS.blue, COLOURS.cyan,
@@ -193,7 +195,8 @@ COLOURS.reset, COLOURS.cyan, COLOURS.reset, COLOURS.blue, COLOURS.cyan,
 COLOURS.reset, COLOURS.cyan, COLOURS.reset,
 COLOURS.reset, COLOURS.cyan, COLOURS.reset,
 COLOURS.reset, COLOURS.cyan, COLOURS.reset,
-COLOURS.reset, COLOURS.cyan, COLOURS.reset,   
+COLOURS.reset, COLOURS.cyan, COLOURS.reset,
+COLOURS.reset, COLOURS.cyan, COLOURS.reset, COLOURS.blue, COLOURS.cyan, COLOURS.blue, COLOURS.cyan,
 COLOURS.reset, COLOURS.cyan, COLOURS.reset,
 COLOURS.reset, COLOURS.cyan, COLOURS.reset,
 COLOURS.reset, COLOURS.cyan, COLOURS.reset, COLOURS.red, COLOURS.reset, COLOURS.bold_purple, COLOURS.reset,
