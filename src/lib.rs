@@ -55,7 +55,7 @@ use net::handle;
 /// 
 /// # Arguments
 ///
-/// * `prompt` - A promt of type std::string::String which is asked to ChatGPT
+/// * `prompt` - A promt of type str which is asked to ChatGPT
 /// * `params` - Parameters to configure the prompt
 /// * `settings` - Settings to configure the model
 ///
@@ -72,8 +72,9 @@ use net::handle;
 ///     Ok(e) => println!("Gpt Response: {}", e),
 ///     Err(e) => eprintln!("{}", e);
 /// }
-pub fn query(prompt: String, params: Params, settings: Settings) -> Result<String, Box<dyn Error>> {
-    match handle(prompt.as_str(), params, settings) {
+///
+pub fn query(prompt: &str, params: Params, settings: Settings) -> Result<String, Box<dyn Error>> {
+    match handle(prompt, params, settings) {
         Ok(response) => Ok(response),
         Err(e) => Err(e)
     }
