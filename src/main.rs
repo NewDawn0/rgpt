@@ -6,7 +6,7 @@
  *      |___/|_| https://github.com/NewDawn0/rgpt
  *
  *  file: main.rs
- *  desc: Main file
+ *  desc: Main file (bin)
  *  date: 22.02.2023
  *  lang: rust
  *
