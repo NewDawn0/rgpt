@@ -46,7 +46,7 @@ mod common;
 mod net;
 mod util;
 use std::error::Error;
-use common::{Params, Settings};
+pub use common::{Params, Settings};
 use net::handle;
 
 /// This function sends a prompt to ChatGPT,
