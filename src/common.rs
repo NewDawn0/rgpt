@@ -101,7 +101,7 @@ pub struct Settings {
 impl Settings {
     pub fn new() -> Settings {
         Settings {
-            model: String::from("text-davinci-003"),
+            model: String::from("gpt-4"),
             max_tokens: 1024,
             temperature: 0.2,
             top_p: 0.9

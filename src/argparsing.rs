@@ -65,6 +65,8 @@ pub fn parse_args() -> (String, Params, Settings) {
                                 "ada" => settings.model = String::from("text-ada-001"),
                                 "curie" => settings.model = String::from("text-curie-001"),
                                 "babbage" => settings.model = String::from("text-babbage-001"),
+                                "gpt-3" => settings.model = String::from("gpt-3"),
+                                "gpt-4" => settings.model = String::from("gpt-4"),
                                 model => error_exit!("Invalid model '{}'", model)
                             }
                         },
