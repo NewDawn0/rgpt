@@ -91,7 +91,7 @@ fn main() {
  * @PARAM prompt: String
  * @PARAM params: crate::common::Params
  * @PARAM settings: crate::common::Settings */
-fn query(prompt: String, params: &mut Params, settings: Settings, history: Vec<String>) {
+fn query(prompt: String, params: &mut Params, settings: Settings, _history: Vec<String>) {
     let mut sp: Option<Spinner> = None;
     if params.spinner {
         sp = Some(Spinner::new(Dots, format!("{}Waiting for response...", COLOURS.purple)));

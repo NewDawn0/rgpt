@@ -65,8 +65,7 @@ pub fn parse_args() -> (String, Params, Settings) {
                                 "ada" => settings.model = String::from("text-ada-001"),
                                 "curie" => settings.model = String::from("text-curie-001"),
                                 "babbage" => settings.model = String::from("text-babbage-001"),
-                                "gpt-3" => settings.model = String::from("gpt-3"),
-                                "gpt-4" => settings.model = String::from("gpt-4"),
+                                // "gpt-3.5-turbo" => settings.model = String::from("gpt-3.5-turbo"),
                                 model => error_exit!("Invalid model '{}'", model)
                             }
                         },
@@ -114,14 +113,14 @@ pub fn parse_args() -> (String, Params, Settings) {
                 error_exit!("Tokens for model not between 5 and 2048")
             }
         },
-        "text-davinci-003" => {
-            if temp_tokens >= 5 && temp_tokens <= 4000 {
+        "text-davinci-003" => { // TODO: add gpt-3.5-turbo
+            if temp_tokens >= 5 && temp_tokens <= 4096 {
                 settings.max_tokens = temp_tokens
             } else {
                 error_exit!("Tokens for model not between 5 and 2048")
             }
         },
-        &_ => {}
+        &_ => {} // Impossible
     }
 
     (prompt, params, settings)
