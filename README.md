@@ -13,18 +13,47 @@ code mode, shell mode, and executable mode. Additionally, RGPT has the ability t
 the max tokens, the temperature, and the accuracy. RGPT is available through the Cargo install command or via a Docker container.
 
 ## Installation
-### Install binary
-**Cargo**
+### Install using Cargo
 ```bash
 cargo install --git https://github.com/NewDawn0/rgpt
 ```
-**Install from source**
+### Install using Nix
+#### Imperatively
 ```bash
 git clone https://github.com/NewDawn0/rgpt
-cd rgpt
-cargo build --release
-sudo mv target/release/rgpt /usr/local/bin/
+nix profile install .
 ```
+#### Declaratively
+1. Add it as an input to your system flake as follows
+    ```nix
+    {
+      inputs = {
+        # Your other inputs ...
+        note = {
+          url = "github:NewDawn0/rgpt";
+          inputs.nixpkgs.follows = "nixpkgs";
+          # Optional: If you use nix-systems or rust-overlay
+          inputs.nix-systems.follows = "nix-systems";
+          inputs.rust-overlay.follows = "rust-overlay";
+        };
+      };
+    }
+    ```
+2. Add this to your overlays to expose note to your pkgs
+    ```nix
+    (final: prev: {
+      note = inputs.rgpt.packages.${prev.system}.default;
+    })
+    ```
+3. Then you can either install it in your `environment.systemPackages` using 
+    ```nix
+    environment.systemPackages = with pkgs; [ rgpt ];
+    ```
+    or install it to your `home.packages`
+    ```nix
+    home.packages = with pkgs; [ rgpt ];
+    ```
+
 ### Using rgpt in your project
 To use rgpt in your project, run
 ```bash
