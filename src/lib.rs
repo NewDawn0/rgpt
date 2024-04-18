@@ -42,7 +42,7 @@
 #![allow(unused)]
 
 /* Modules & Imports */
-mod common;
+pub mod common;
 mod net;
 mod util;
 use std::error::Error;
@@ -61,6 +61,7 @@ use net::handle;
 ///
 /// #
 /// # Example
+/// ```rust
 /// use rgpt::*;
 /// 
 /// let prompt = String::from("Write a hello world program");
@@ -72,6 +73,7 @@ use net::handle;
 ///     Ok(e) => println!("Gpt Response: {}", e),
 ///     Err(e) => eprintln!("{}", e);
 /// }
+/// ```
 pub fn query(prompt: String, params: Params, settings: Settings) -> Result<String, Box<dyn Error>> {
     match handle(prompt.as_str(), params, settings) {
         Ok(response) => Ok(response),

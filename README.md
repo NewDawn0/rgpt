@@ -55,63 +55,16 @@ nix profile install .
     ```
 
 ### Using rgpt in your project
-To use rgpt in your project, run
+To use rgpt in your project, run:
 ```bash
 cargo add --git https://github.com/NewDawn0/rgpt
 ```
+Then use `cargo doc --open` to open the documentation
 
 ## Usage
 ```bash
 # Simple usage
 rgpt <your prompt>
 
-# Use rgpt --help for the list of options
-# output of rgpt --help
-#                  _
-#  _ __ __ _ _ __ | |_   An insane cli ChatGPT client
-# | '__/ _` | '_ \| __|  Author: NewDawn0
-# | | | (_| | |_) | |_   License: MIT
-# |_|  \__, | .__/ \__|  Copyright: ©NewDawn0 2023
-#      |___/|_|  https://github.com/NewDawn0/rgpt
-# 
-# OPTIONS
-#     -h                          Print this help menu
-#     --help                      Print this help menu
-# 
-#     -c                          Return code as answer only           Incompatible with: --no-fmt
-#     --code                      Return code as answer only           Incompatible with: --no-fmt
-# 
-#     -s                          Returns a shell command
-#     --shell                     Returns a shell command
-#     -e                          Executes the shell command           Depends on: --shell
-#     --execute                   Executes the shell command           Depends on: --shell
-# 
-#     -i                          Starts interactive mode
-#     --interactive               Starts interactive mode
-#     --no-parse                  Sets if arguments need to be parsed  Depends on: --interactive
-# 
-#     -r                          Roasts person
-#     --roast                     Roasts person
-# 
-#     --no-timout                 Disables request timed out message
-#     --no-spinner                Disables the waiting spinner
-#     --no-fmt                    Disables answer string formatting    Incompatible with: --code   Depends on: --no-spinner
-# 
-#     -k                          By using this flag, you can specify an API key which will override the environment variable
-#     --key                       By using this flag, you can specify an API key which will override the environment variable
-# 
-#     --config   <key=value>      Configures gpt itself:
-#                model=<String>       davinci|ada|curie|babbage        Defalt: davinci
-#                maxTokens=<int>      ada|curie|babbage: 5 - 2048      Defalt: 1024
-#                                     davinci: 4000
-#                temperature=<float>  0 - 2                            Defalt: 0.2
-#                accuracy=<float>     0 - 1                            Defalt: 0.9
-# 
-# DESCRIPTION
-#     Placeholder
-#     For more info about the tool or its options visit the repo ttps://github.com/NewDawn0/rgpt
-# 
-# EXAMPLE
-#     $ rgpt --shell Remove files containing tmp in filename
-#     rm *tmp*
+# Use rgpt --help for a more options
 ```
