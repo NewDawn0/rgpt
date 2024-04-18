@@ -62,16 +62,15 @@ use net::handle;
 /// #
 /// # Example
 /// ```rust
-/// use rgpt::*;
+/// use rgpt::{query, common::*};
 /// 
 /// let prompt = String::from("Write a hello world program");
 /// let mut params = Params::new();
 /// params.code = true;
 /// let settings = Settings::new();
-///
 /// match query(prompt, params, settings) {
-///     Ok(e) => println!("Gpt Response: {}", e),
-///     Err(e) => eprintln!("{}", e);
+///     Ok(e) => println!("Got resp: {}", e),
+///     Err(e) => println!("Err: {}", e),
 /// }
 /// ```
 pub fn query(prompt: String, params: Params, settings: Settings) -> Result<String, Box<dyn Error>> {
