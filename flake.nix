@@ -26,7 +26,7 @@
             src = pkgs.lib.cleanSource ./.;
             buildInputs = with pkgs;
               if pkgs.stdenv.isDarwin then
-                with darwin.apple_sdk.frameworks; [ Security ]
+                with darwin; [ apple_sdk.frameworks.SystemConfiguration libiconv ]
               else
                 [ ];
             meta = with pkgs.lib; {
