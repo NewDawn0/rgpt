@@ -29,7 +29,7 @@ nix profile install .
     {
       inputs = {
         # Your other inputs ...
-        note = {
+        rgpt = {
           url = "github:NewDawn0/rgpt";
           inputs.nixpkgs.follows = "nixpkgs";
           # Optional: If you use nix-systems or rust-overlay
@@ -39,10 +39,10 @@ nix profile install .
       };
     }
     ```
-2. Add this to your overlays to expose note to your pkgs
+2. Add this to your overlays to expose rgpt to your pkgs
     ```nix
     (final: prev: {
-      note = inputs.rgpt.packages.${prev.system}.default;
+      rgpt = inputs.rgpt.packages.${prev.system}.default;
     })
     ```
 3. Then you can either install it in your `environment.systemPackages` using 
