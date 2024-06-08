@@ -16,6 +16,8 @@
           overlays = [ inputs.rust-overlay.overlays.default ];
         };
     in {
+      overlays.default =
+        (final: prev: { rgpt = self.packages.${prev.system}.default; });
       packages = eachSystem (system:
         let pkgs = mkPkgs system;
         in {
@@ -26,7 +28,10 @@
             src = pkgs.lib.cleanSource ./.;
             buildInputs = with pkgs;
               if pkgs.stdenv.isDarwin then
-                with darwin; [ apple_sdk.frameworks.SystemConfiguration libiconv ]
+                with darwin; [
+                  apple_sdk.frameworks.SystemConfiguration
+                  libiconv
+                ]
               else
                 [ ];
             meta = with pkgs.lib; {
